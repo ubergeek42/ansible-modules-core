@@ -318,8 +318,10 @@ def privileges_unpack(priv):
     output = {}
     for item in priv.strip().split('/'):
         pieces = item.strip().split(':')
-        dbpriv = pieces[0].rsplit(".", 1)
-        pieces[0] = "`%s`.%s" % (dbpriv[0].strip('`'), dbpriv[1])
+        # skip adding backticks for *.*
+        if pieces[0] != '*.*':
+            dbpriv = pieces[0].rsplit(".", 1)
+            pieces[0] = "`%s`.%s" % (dbpriv[0].strip('`'), dbpriv[1])
 
         output[pieces[0]] = [s.strip() for s in pieces[1].upper().split(',')]
         new_privs = frozenset(output[pieces[0]])
